@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Five Days in Saigon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500;1,9..144,600&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    box-sizing:border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --bg:#faf3e6;
+    --bg-alt:#f1e6d0;
+    --surface:#ffffff;
+    --surface-2:#fbf4e6;
+    --border:rgba(70,45,20,0.14);
+    --border-strong:rgba(70,45,20,0.24);
+    --text:#241a0f;
+    --text-dim:#5c4934;
+    --text-faint:#8a7a63;
+    --gold:#a8661f;
+    --gold-rgb:168,102,31;
+    --gold-soft:#8a5417;
+    --gold-ink:#1c1206;
+    --coral:#b83b2c;
+    --jade:#186f58;
+    --jade-rgb:24,111,88;
+    --shadow:0 20px 50px -24px rgba(60,35,10,0.25);
+    --nav-h:60px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17130f; --bg-alt:#1f1a14; --surface:#241e17; --surface-2:#2b2419;
+      --border:rgba(232,196,140,0.16); --border-strong:rgba(232,196,140,0.28);
+      --text:#f4ede0; --text-dim:#cabfab; --text-faint:#93897a;
+      --gold:#e3a542; --gold-rgb:227,165,66; --gold-soft:#f0c878; --gold-ink:#1c1206;
+      --coral:#ff8272; --jade:#52d3ae; --jade-rgb:82,211,174; --shadow:0 20px 60px -20px rgba(0,0,0,0.65);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#17130f; --bg-alt:#1f1a14; --surface:#241e17; --surface-2:#2b2419;
+    --border:rgba(232,196,140,0.16); --border-strong:rgba(232,196,140,0.28);
+    --text:#f4ede0; --text-dim:#cabfab; --text-faint:#93897a;
+    --gold:#e3a542; --gold-rgb:227,165,66; --gold-soft:#f0c878; --gold-ink:#1c1206;
+    --coral:#ff8272; --jade:#52d3ae; --jade-rgb:82,211,174; --shadow:0 20px 60px -20px rgba(0,0,0,0.65);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:calc(env(safe-area-inset-top,0px) + var(--nav-h) + 14px);}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Archivo',-apple-system,BlinkMacSystemFont,sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 15% 0%, rgba(var(--gold-rgb),0.14), transparent 60%),
+      radial-gradient(ellipse 50% 35% at 100% 10%, rgba(var(--jade-rgb),0.10), transparent 60%);
+    background-repeat:no-repeat;
+  }
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif; margin:0; color:var(--text);}
+  p{margin:0 0 .8em; color:var(--text-dim);}
+  a{color:var(--gold-soft);}
+  .wrap{max-width:720px; margin:0 auto; padding:0 20px;}
+
+  .navbar{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:50;
+    background:rgba(var(--gold-rgb),0.04);
+    background-color:var(--bg);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    opacity:0.98;
+    border-bottom:1px solid var(--border);
+  }
+  .navbar-inner{display:flex; align-items:center; gap:10px; height:var(--nav-h); max-width:760px; margin:0 auto; padding:0 12px;}
+  .navbar-mark{font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem; flex:none; padding-left:4px; white-space:nowrap;}
+  .navbar-mark span{color:var(--gold);}
+  .navchips{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; padding:4px 2px;}
+  .navchips::-webkit-scrollbar{display:none;}
+  .navchip{
+    flex:none; font-family:'Archivo',sans-serif; font-weight:700; font-size:.72rem; letter-spacing:.04em;
+    text-decoration:none; color:var(--text-dim); background:var(--surface);
+    border:1px solid var(--border); border-radius:999px; padding:8px 12px; white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .navchip.is-today{color:var(--gold-ink); background:var(--gold); border-color:var(--gold);}
+
+  .hero{padding:38px 0 26px; position:relative;}
+  .eyebrow{
+    display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--gold-soft); border:1px solid var(--border-strong); border-radius:999px; padding:5px 12px; margin-bottom:18px;
+    animation:riseIn .6s ease both;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 11vw, 3.4rem); line-height:.98; font-weight:600; letter-spacing:-.01em;
+    animation:riseIn .7s .05s ease both;
+  }
+  .hero h1 em{font-style:italic; font-weight:500; color:var(--gold);}
+  .hero-sub{margin-top:16px; font-size:1.02rem; color:var(--text-dim); max-width:52ch; animation:riseIn .7s .12s ease both;}
+  .stat-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; animation:riseIn .7s .18s ease both;}
+  .stat{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:10px 14px; flex:1 1 140px; box-shadow:var(--shadow);}
+  .stat b{display:block; font-family:'Fraunces',serif; font-size:1.05rem; font-weight:600;}
+  .stat span{font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; color:var(--text-faint);}
+  @keyframes riseIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+  .wave{display:block; width:100%; height:22px; margin:30px 0; opacity:.55;}
+  .wave path{fill:none; stroke:var(--gold); stroke-width:2; stroke-linecap:round;}
+
+  section.block-section{padding:8px 0 34px;}
+  .sec-eyebrow{font-size:.72rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--jade);}
+  .sec-title{font-size:1.55rem; font-weight:600; margin-top:4px; margin-bottom:14px;}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px 18px; box-shadow:var(--shadow); margin-bottom:12px;}
+  .card h3{font-size:1rem; font-weight:700; font-family:'Archivo',sans-serif;}
+  .grid2{display:grid; grid-template-columns:1fr; gap:12px;}
+  @media(min-width:560px){.grid2{grid-template-columns:1fr 1fr;}}
+
+  .price-tag{
+    display:inline-block; font-family:'Archivo',sans-serif; font-size:.72rem; font-weight:700;
+    color:var(--jade); background:rgba(var(--jade-rgb),0.14);
+    border-radius:999px; padding:2px 9px; margin-left:6px; white-space:nowrap; vertical-align:middle;
+  }
+
+  .tbl-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); margin-bottom:14px;}
+  table{width:100%; border-collapse:collapse; font-size:.88rem; min-width:460px;}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th{font-family:'Archivo',sans-serif; font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); background:var(--surface-2);}
+  td{color:var(--text-dim);}
+  td b, td strong{color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+
+  .day{padding:30px 0; border-top:1px solid var(--border);}
+  .day-head{display:flex; align-items:flex-start; gap:14px; margin-bottom:6px;}
+  .day-num{font-family:'Fraunces',serif; font-weight:300; font-size:2.6rem; line-height:1; color:var(--gold); flex:none; opacity:.85;}
+  .day-date{display:block; font-size:.72rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint); margin-bottom:2px;}
+  .today-badge{display:none; color:var(--coral); font-weight:800; margin-left:4px;}
+  .day-head h2{font-size:1.5rem; font-weight:600;}
+  .day-intro{margin:10px 0 18px; font-size:.95rem;}
+
+  .block{margin-bottom:22px;}
+  .block-time{
+    display:inline-block; font-size:.68rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--gold-soft); margin-bottom:10px; padding-bottom:4px; border-bottom:2px solid var(--border-strong);
+  }
+  .block-time.night{color:var(--coral);}
+  .activity{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px 18px; box-shadow:var(--shadow); margin-bottom:12px;}
+  .activity h3{font-size:1.02rem; font-weight:700; font-family:'Archivo',sans-serif; margin-bottom:6px; line-height:1.3;}
+  .activity p{font-size:.9rem; margin-bottom:.6em;}
+  .activity p:last-of-type{margin-bottom:0;}
+  .activity p + p{margin-top:.6em;}
+
+  details.backup{margin-top:10px; border:1px dashed var(--border-strong); border-radius:12px; padding:0; background:rgba(var(--jade-rgb),0.06);}
+  details.backup summary{list-style:none; cursor:pointer; padding:9px 14px; font-size:.78rem; font-weight:700; color:var(--jade); display:flex; align-items:center; gap:7px;}
+  details.backup summary::-webkit-details-marker{display:none;}
+  details.backup summary::before{content:"⇄"; font-weight:900;}
+  details.backup[open] summary{border-bottom:1px dashed var(--border-strong);}
+  details.backup .backup-body{padding:4px 14px 14px;}
+  details.backup .backup-body p{font-size:.86rem; margin-bottom:0; color:var(--text-dim);}
+
+  .note{font-size:.82rem; color:var(--text-faint); background:var(--bg-alt); border-radius:12px; padding:10px 14px; margin-top:10px; border-left:3px solid var(--gold);}
+
+  .buy-item{padding:14px 0; border-bottom:1px solid var(--border);}
+  .buy-item:last-child{border-bottom:none;}
+  .buy-item h3{font-size:.95rem; font-weight:700; font-family:'Archivo',sans-serif; margin-bottom:4px;}
+  .buy-item p{font-size:.88rem; margin-bottom:4px;}
+  .buy-tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;}
+  .buy-tag{font-size:.68rem; font-weight:800; letter-spacing:.03em; text-transform:uppercase; padding:3px 9px; border-radius:7px;}
+  .buy-tag.online{color:var(--jade); background:rgba(var(--jade-rgb),0.15);}
+  .buy-tag.physical{color:var(--gold-soft); background:rgba(var(--gold-rgb),0.18);}
+
+  .etiquette-list{display:grid; gap:10px;}
+  .etiquette-item{display:flex; gap:12px; align-items:flex-start;}
+  .etiquette-num{flex:none; font-family:'Fraunces',serif; font-weight:600; font-size:1.1rem; color:var(--gold); width:28px;}
+  .etiquette-item p{margin:0; font-size:.9rem;}
+  .etiquette-item b{color:var(--text);}
+
+  footer{padding:36px 0 50px; text-align:center;}
+  footer p{font-size:.8rem; color:var(--text-faint); max-width:40ch; margin:0 auto;}
+  footer .sign{font-family:'Fraunces',serif; font-style:italic; color:var(--gold-soft); font-size:1rem; margin-bottom:8px; display:block;}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="navbar-mark">SG<span>·</span>26</div>
+    <div class="navchips" id="navchips">
+      <a class="navchip" data-day="day2" href="#day2">TUE 22</a>
+      <a class="navchip" data-day="day3" href="#day3">WED 23</a>
+      <a class="navchip" data-day="day4" href="#day4">THU 24</a>
+      <a class="navchip" data-day="day5" href="#day5">FRI 25</a>
+      <a class="navchip" data-day="day6" href="#day6">SAT 26</a>
+      <a class="navchip" href="#budget">BUDGET</a>
+      <a class="navchip" href="#cheatsheet">PRICES</a>
+      <a class="navchip" href="#buy">BUY</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">Ho Chi Minh City · Tue 22 – Sat 26 Sep</span>
+    <h1>Five days <em>in</em> Saigon</h1>
+    <p class="hero-sub">Reworked from the group-chat plan — fewer ticket queues, more of the city that isn't trying to sell you something, and a nightlife pick every night that actually makes sense from where you're staying.</p>
+    <div class="stat-row">
+      <div class="stat"><b>District 10 base</b><span>Bamboo Saigon Hotel, Sư Vạn Hạnh St</span></div>
+      <div class="stat"><b>~500k–850k VND/day</b><span>Everyday spend, per person</span></div>
+      <div class="stat"><b>Flight 13:15 Sat</b><span>Leave the hotel ~9:30am</span></div>
+    </div>
+  </header>
+
+  <svg class="wave" viewBox="0 0 300 20" preserveAspectRatio="none"><path d="M0,10 Q15,0 30,10 T60,10 T90,10 T120,10 T150,10 T180,10 T210,10 T240,10 T270,10 T300,10"/></svg>
+
+  <section class="block-section" id="setup">
+    <span class="sec-eyebrow">Worth knowing before you head out</span>
+    <h2 class="sec-title">The basics</h2>
+    <div class="card">
+      <h3>Your base: District 10</h3>
+      <p>Bamboo Saigon Hotel sits on Sư Vạn Hạnh Street, District 10 — not District 1. That matters for pacing: most of the classic D1 sights (War Remnants Museum, Notre-Dame, Ben Thanh, Bui Vien) are a genuine <b>15–25 minute Grab</b> away, not a stroll. The upside: you're already close to Ho Thị Kỳ Flower Market and well-positioned for Cholon (District 5 is right next door), which is why those two show up as your easiest nights.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Data</h3>
+        <p>eSIM (Airalo/Saily/Holafly, ~US$4 for a small plan up to ~US$20–32 for 20GB/30 days) if you want to sort it from the room. Otherwise find an actual Viettel, Mobifone or VinaPhone <em>store</em> — convenience stores don't sell SIMs anymore. In-store tourist SIMs run roughly 90,000–220,000 VND for 15–30 days.</p>
+      </div>
+      <div class="card">
+        <h3>Cash &amp; cards</h3>
+        <p>Cards work at malls, hotels and mid-range restaurants; street food, markets and bia hơi corners are cash-only. Rough mental-math rates: <b>≈26,000 VND = US$1</b>, <b>≈18,300 VND = A$1</b> (moves a little day to day).</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Apps worth having</h3>
+      <p><b>Grab</b> (rides + food delivery, the default here) · <b>Google Maps</b> with District 1 and District 10 downloaded offline · <b>Google Translate</b> camera mode for menus · a currency converter for quick VND checks.</p>
+    </div>
+  </section>
+
+  <section class="block-section" id="budget">
+    <span class="sec-eyebrow">The money talk</span>
+    <h2 class="sec-title">What this actually costs</h2>
+    <p>Hotel's booked and flights are sorted, so this is just food, local transport, activities and going-out money — per person.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Category</th><th>Per day</th><th>≈ USD / AUD</th></tr>
+        <tr><td>Everyday spend<br><span style="font-size:.78rem">food + coffee + local Grab rides + a casual drink</span></td><td><b>500,000–850,000 VND</b></td><td>$19–33 · A$27–46</td></tr>
+        <tr><td>Cu Chi Tunnels day <span style="font-size:.78rem">(add to baseline)</span></td><td><b>+ US$25–35</b></td><td>tour price, pp</td></tr>
+        <tr><td>Mekong Delta day <span style="font-size:.78rem">(add to baseline)</span></td><td><b>+ US$35–45</b></td><td>tour price, pp</td></tr>
+      </table>
+    </div>
+    <p style="font-size:.85rem">Five days of everyday spend plus both tour days, no hotel, no flights, no splurge shopping: roughly <b>4–6 million VND per person</b> (≈US$155–230 / A$220–330). Treat it as a ceiling — plenty of it disappears in 25,000 VND banh mi and 15,000 VND beers.</p>
+  </section>
+
+  <!-- ================= DAY 2 ================= -->
+  <section class="day" id="day2">
+    <div class="day-head">
+      <span class="day-num">02</span>
+      <div>
+        <span class="day-date">Tue 22 Sep <span class="today-badge">· TODAY</span></span>
+        <h2>Old Saigon, on foot</h2>
+      </div>
+    </div>
+    <p class="day-intro">The original plan stacked five stops into one day — palace, museum, cathedral, post office, market. We kept the one that's genuinely worth the time and turned the rest into a walk, not a checklist. It's a District 1/3 day, so budget ~20 min each way from the hotel.</p>
+
+    <div class="block">
+      <span class="block-time">Morning</span>
+      <div class="activity">
+        <h3>War Remnants Museum <span class="price-tag">40,000 VND · ~2h</span></h3>
+        <p>28 Võ Văn Tần, District 3. It opens at 7:30 — worth getting there close to that, both for the heat and the crowds. It tells the war entirely from the Vietnamese side with no softening, including a heavy Agent Orange section, so go in braced for that. It's the one "museum day" we kept, because it's not really comparable to a normal museum visit.</p>
+        <details class="backup">
+          <summary>Want one more stop before lunch?</summary>
+          <div class="backup-body"><p>Three options depending on mood: <b>Independence Palace</b> (40,000 VND, ~1.5h) for the full 1960s time-capsule of the old South Vietnamese presidency, tanks included; the <b>Secret War Bunker</b> at 287/70 Nguyễn Đình Chiểu — a Viet Cong weapons cache hidden under an ordinary house, small, strange, almost no tourists know about it; or <b>Jade Emperor Pagoda</b> (73 Mai Thị Lựu, Đa Kao — free/donation), a short Grab away, all carved wood, incense, and resident tortoises.</p></div>
+        </details>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="block-time">Midday</span>
+      <div class="activity">
+        <h3>Notre-Dame + Central Post Office <span class="price-tag">free · 20–30 min</span></h3>
+        <p>Heads up: the cathedral's been under restoration since 2017 and isn't fully finished until 2027, so don't expect the postcard shot — parts are still scaffolded. Still worth a walk past for the architecture. The Post Office next door more than makes up for it: free to wander, genuinely stunning colonial interior, and you can mail an actual postcard home from the same counters that have been there since the French built it.</p>
+      </div>
+      <div class="activity">
+        <h3>Lunch: cơm tấm nearby <span class="price-tag">~50k–70k VND</span></h3>
+        <p>Broken rice with a grilled pork chop, a fried egg, pickled veg — the everyday lunch of half the city. Any place with plastic stools and a full room of locals mid-meal is doing it right.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="block-time">Afternoon</span>
+      <div class="activity">
+        <h3>42 Nguyễn Huệ — the "apartment cafe" building <span class="price-tag">~35k–70k VND / drink</span></h3>
+        <p>An old apartment block a few floors up, now packed wall-to-wall with tiny independent cafes, plant shops and clothing racks. Not a museum, not a market — just a slightly maze-like building you climb, floor by floor, until you find a spot with a balcony over Nguyễn Huệ and a coffee worth the climb.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="block-time">Evening</span>
+      <div class="activity">
+        <h3>Ben Thanh — but only the night stalls <span class="price-tag">~40k–90k VND / dish</span></h3>
+        <p>Skip the daytime market entirely — it's where the classic tourist markup lives (see the price cheat-sheet below). After 5pm, plastic tables spill out around the building's perimeter and it turns into a proper street-food court: grilled seafood, stir-fries cooked in front of you, cold beer.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="block-time night">Nightlife</span>
+      <div class="activity">
+        <h3>Rex Hotel Rooftop Bar <span class="price-tag">~150k–300k VND / drink</span></h3>
+        <p>141 Nguyễn Huệ — a five-minute walk from where you'll already be. One of Saigon's original rooftop bars: colonial-era hotel, an elevated garden terrace looking straight down Nguyễn Huệ toward City Hall lit up gold. Less see-and-be-seen than the newer towers, more old-Saigon institution. Good pick for night one out since you're already right there.</p>
+        <details class="backup">
+          <summary>Want something cheaper, or more low-key</summary>
+          <div class="backup-body"><p><b>Turtle Lake (Hồ Con Rùa)</b> — a roundabout that's become the go-to late hangout for university students. Plastic stools ring the edge, cheap drinks and snacks (~15,000–30,000 VND), zero tourist energy, good people-watching, no cover charge for the view.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DAY 3 ================= -->
+  <section class="day" id="day3">
+    <div class="day-head">
+      <span class="day-num">03</span>
+      <div>
+        <span class="day-date">Wed 23 Sep <span class="today-badge">· TODAY</span></span>
+        <h2>Underground, then unwind</h2>
+      </div>
+    </div>
+    <p class="day-intro">Two tunnel sites exist and most big-bus tours default to the closer, busier one without telling you. Worth knowing before you book.</p>
+
+    <div class="block">
+      <span class="block-time">Morning – early afternoon</span>
+      <div class="activity">
+        <h3>Cu Chi Tunnels — go to Ben Dược <span class="price-tag">~US$25–35 pp</span></h3>
+        <p>Ben Dinh (closer, ~50km) is where the big 40-person coach tours go — widened tunnels, more infrastructure, more crowds. Ben Dược (~70km) gets three to four times fewer visitors, keeps the tunnels closer to their original cramped size, and adds a large memorial temple. A small-group tour (max ~10–12 people) that specifically goes to Ben Dược is the move.</p>
+        <details class="backup">
+          <summary>Tighter budget, or short on time</summary>
+          <div class="backup-body"><p>Standard big-bus Ben Dinh tours run from ~US$12–20 including hotel pickup and entrance. Entrance alone (both sites) is 110,000–135,000 VND, so an independent Grab there and back (~350,000–400,000 VND one-way) plus tickets works too, if you don't want a guide.</p></div>
+        </details>
+        <p style="margin-top:10px">If you're curious: most sites offer a shooting range add-on (AK-47/M16, priced per bullet, usually a 10-round minimum, roughly 400,000–600,000 VND all in). Purely optional, worth knowing it exists rather than getting surprise-upsold on site.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="block-time night">Nightlife</span>
+      <div class="activity">
+        <h3>Bùi Viện Walking Street <span class="price-tag">beer ~15k–25k VND</span></h3>
+        <p>Let's be honest about what this is: the backpacker strip, beer towers, street performers, everyone a little too loud. It's genuinely fun for one night. Worth the ~20 min Grab back out from the hotel — this one isn't walkable from District 10. A beer tower runs ~200,000–300,000 VND and easily splits between you two.</p>
+        <details class="backup">
+          <summary>If that's not really your scene</summary>
+          <div class="backup-body"><p><b>Pasteur Street Brewing Co</b> (District 1) — Vietnamese-brewed craft beer, proper IPAs and stouts, a calmer, slightly older crowd. ~90,000–150,000 VND a pint.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DAY 4 ================= -->
+  <section class="day" id="day4">
+    <div class="day-head">
+      <span class="day-num">04</span>
+      <div>
+        <span class="day-date">Thu 24 Sep <span class="today-badge">· TODAY</span></span>
+        <h2>Mekong, without the shuffle</h2>
+      </div>
+    </div>
+    <p class="day-intro">Quick expectation-set: the famous floating market (Cai Răng, near Can Tho) is far enough away that it genuinely needs an overnight trip. What's doable in a day from Saigon is My Tho and Bến Tre — canals, coconut groves, a sampan row through the water-coconut trees.</p>
+
+    <div class="block">
+      <span class="block-time">Full day</span>
+      <div class="activity">
+        <h3>My Tho + Bến Tre — small-group tour <span class="price-tag">~US$35–45 pp</span></h3>
+        <p>Depart ~7:30–8am, ~1.5h drive out. Vĩnh Tràng pagoda, a motorised boat past Dragon/Unicorn/Phoenix/Tortoise islets, then a hand-rowed sampan through Bến Tre's coconut canals, a village stop for honey tea and tropical fruit with live folk music, and lunch included. A "lesser-known" small-group version (capped around 10) skips the worst of the big-bus bottlenecks at the coconut-candy workshop stop.</p>
+        <details class="backup">
+          <summary>Cheaper, pricier, or more active options</summary>
+          <div class="backup-body"><p><b>Budget:</b> standard group-bus version, from ~US$20 pp. <b>Private:</b> your own guide and car, set your own pace, from ~US$70–100+ pp. <b>More active:</b> Mekong cycling tours through the back roads and villages exist too (~US$40–70 pp) — better fit if a full day of being ferried around isn't your speed.</p></div>
+        </details>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="block-time night">Nightlife</span>
+      <div class="activity">
+        <h3>Ho Thị Kỳ Night Market <span class="price-tag">~30k–70k VND / dish</span></h3>
+        <p>This is the one that's actually close to you — about 5 minutes from the hotel. Open 6pm–midnight, District 10, and genuinely more locals than tourists: a flower-trading market by day that turns into food stalls and general night-market chaos after dark — banh mi, pho, grilled seafood, plus clothes and household stalls if you feel like browsing. After a full day being ferried around the Mekong, this is the low-effort, high-reward option — no Grab back into D1 required.</p>
+        <details class="backup">
+          <summary>If you're properly wiped</summary>
+          <div class="backup-body"><p>Completely fair after a 7am-start day trip — grab something from the hotel's own restaurant or order Grab Food to the room and call it an early one. Tomorrow's a big day.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DAY 5 ================= -->
+  <section class="day" id="day5">
+    <div class="day-head">
+      <span class="day-num">05</span>
+      <div>
+        <span class="day-date">Fri 25 Sep <span class="today-badge">· TODAY</span></span>
+        <h2>Cholon, and the last big night</h2>
+      </div>
+    </div>
+    <p class="day-intro">One geography fix from the original plan: Jade Emperor Pagoda is actually up in District 1, not Cholon — we moved it to day two. Cholon's own temple is Thiên Hậu, and it's a better fit here anyway. Bonus: District 5 borders District 10, so today's the easiest commute of the trip.</p>
+
+    <div class="block">
+      <span class="block-time">Morning – midday</span>
+      <div class="activity">
+        <h3>Bình Tây Market <span class="price-tag">free to wander</span></h3>
+        <p>Cholon's real market — wholesale, working, loud with trolleys and trade rather than souvenir stalls. Good for browsing, better for photos, and there's decent cheap food in the streets immediately around it.</p>
+      </div>
+      <div class="activity">
+        <h3>Thiên Hậu Pagoda <span class="price-tag">free/donation</span></h3>
+        <p>710 Nguyễn Trãi, District 5. Built by Cantonese traders around 1790 — small, dim, thick with spiralling incense coils hanging from the ceiling, dedicated to the goddess of seafarers. Cover shoulders and knees. Fifteen quiet minutes that feel a world away from Bùi Viện.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="block-time">Evening</span>
+      <div class="activity">
+        <h3>Last big dinner</h3>
+        <p>You've earned an actual sit-down dinner tonight. Aim for a proper mid-range D1 restaurant (~250,000–500,000 VND per person for a main and a drink) rather than the biggest rooftop name you can find — the good mid-range Vietnamese places in D1/D3 consistently outcook the view-first restaurants for less money. Ask your hotel front desk for tonight's pick.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="block-time night">Nightlife</span>
+      <div class="activity">
+        <h3>Landmark 81 — skip the deck, take the bar <span class="price-tag">drink ~150k–300k VND</span></h3>
+        <p>The SkyView observation deck runs roughly 350,000–800,000 VND depending on package, and the ticket counter is buried in the basement. Skip it: several bars and lounges up on the 70-something floors are walk-in, no ticket required — same view, a seat, air conditioning, for the price of one drink. It's a proper trip from District 10 though — figure ~30 min each way — so make it the one deliberate cross-town night of the trip, saved for last.</p>
+        <details class="backup">
+          <summary>Don't want the trek on your last night</summary>
+          <div class="backup-body"><p><b>Bitexco Skydeck</b> is in D1, lotus-bud shaped, cheaper at ~200,000–230,000 VND, and still a genuinely great view — closer if you'd rather not cross town after already being out all day.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DAY 6 ================= -->
+  <section class="day" id="day6">
+    <div class="day-head">
+      <span class="day-num">06</span>
+      <div>
+        <span class="day-date">Sat 26 Sep <span class="today-badge">· TODAY</span></span>
+        <h2>Wheels up</h2>
+      </div>
+    </div>
+    <p class="day-intro">Flight's at 13:15. International departures at Tan Son Nhat want a 3-hour buffer, and District 10 to the airport is a real drive, not a hop.</p>
+
+    <div class="block">
+      <div class="activity">
+        <h3>Morning: one last one</h3>
+        <p>Early breakfast — a final bánh mì or bowl of phở walking distance from the hotel is a better send-off than the buffet. Checkout by ~9am.</p>
+      </div>
+      <div class="activity">
+        <h3>Getting to Tân Sơn Nhất <span class="price-tag">Grab ~100k–150k VND</span></h3>
+        <p>Leave the hotel by <b>~9:30am</b> — that's roughly a 3-hour buffer before a 13:15 international departure, with District 10's slightly longer haul to the airport (~20–30 min depending on traffic) factored in. GrabCar runs ~100,000–150,000 VND; a metered Vinasun or Mai Linh taxi is ~150,000–250,000 VND and just as reliable if Grab's surging.</p>
+      </div>
+    </div>
+  </section>
+
+  <svg class="wave" viewBox="0 0 300 20" preserveAspectRatio="none"><path d="M0,10 Q15,0 30,10 T60,10 T90,10 T120,10 T150,10 T180,10 T210,10 T240,10 T270,10 T300,10"/></svg>
+
+  <section class="block-section" id="cheatsheet">
+    <span class="sec-eyebrow">So nobody can markup you</span>
+    <h2 class="sec-title">The price cheat-sheet</h2>
+    <p>What things actually cost, at a local-level spot. If a vendor's first quote is three or four times one of these, that's the tourist tax — smile, counter at roughly half, and be ready to walk.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Item</th><th>Fair price</th><th>≈ USD</th></tr>
+        <tr><td>GrabBike, short hop</td><td>15,000–40,000 VND</td><td>$0.60–1.55</td></tr>
+        <tr><td>GrabCar, short hop</td><td>60,000–120,000 VND</td><td>$2.30–4.60</td></tr>
+        <tr><td>Coffee, local shop</td><td>20,000–35,000 VND</td><td>$0.75–1.35</td></tr>
+        <tr><td>Coffee, specialty roaster</td><td>60,000–90,000 VND</td><td>$2.30–3.45</td></tr>
+        <tr><td>Bánh mì, street stall</td><td>20,000–40,000 VND</td><td>$0.75–1.55</td></tr>
+        <tr><td>Phở / hủ tiếu, local spot</td><td>40,000–70,000 VND</td><td>$1.55–2.70</td></tr>
+        <tr><td>Cơm tấm</td><td>50,000–70,000 VND</td><td>$1.90–2.70</td></tr>
+        <tr><td>Sit-down local meal, 2–3 dishes</td><td>100,000–200,000 VND</td><td>$3.85–7.70</td></tr>
+        <tr><td>Mid-range D1 meal, pp</td><td>250,000–500,000 VND</td><td>$9.60–19.20</td></tr>
+        <tr><td>Draft beer (bia hơi)</td><td>10,000–15,000 VND</td><td>$0.40–0.60</td></tr>
+        <tr><td>Bottled water, street</td><td>10,000–15,000 VND</td><td>$0.40–0.60</td></tr>
+        <tr><td>Fresh fruit / sugarcane juice</td><td>15,000–30,000 VND</td><td>$0.60–1.15</td></tr>
+      </table>
+    </div>
+    <p style="font-size:.82rem">Rule of thumb: if a phở bowl is quoted over 100,000 VND, you're paying for the address, not the broth.</p>
+  </section>
+
+  <section class="block-section" id="buy">
+    <span class="sec-eyebrow">What to buy, and where</span>
+    <h2 class="sec-title">Where to actually buy things</h2>
+
+    <div class="buy-item">
+      <h3>SIM / eSIM</h3>
+      <p>eSIM anytime via Airalo, Saily or Holafly (~US$4–20 depending on data). Physical SIM: an actual Viettel/Mobifone/VinaPhone <em>store</em>, not a convenience shop.</p>
+      <div class="buy-tags"><span class="buy-tag online">Online — app, anytime</span><span class="buy-tag physical">Physical — carrier stores only</span></div>
+    </div>
+    <div class="buy-item">
+      <h3>Souvenirs &amp; lacquerware</h3>
+      <p>Ben Thanh's daytime stalls mark up 200–300%; the outer-ring stalls with staff in light-blue shirts are fixed-price if you'd rather skip haggling entirely. Bình Tây Market (Cholon) has better prices if you're up for negotiating. For nicer, pricier pieces, the boutiques around Đồng Khởi St are worth a browse.</p>
+      <div class="buy-tags"><span class="buy-tag physical">Physical only — half the fun is the haggle</span></div>
+    </div>
+    <div class="buy-item">
+      <h3>Clothes / streetwear</h3>
+      <p>Saigon Square (District 1) for cheap, semi-fixed-price fashion finds. Scattered vintage and independent shops through District 1/3 backstreets reward actual wandering more than any single "shopping street" does.</p>
+      <div class="buy-tags"><span class="buy-tag physical">Physical — try things on, it varies by cut</span></div>
+    </div>
+    <div class="buy-item">
+      <h3>Coffee beans to take home</h3>
+      <p>Skip the airport souvenir rack. A proper bag from a specialty roaster or a Trung Nguyên shop runs ~80,000–150,000 VND and actually tastes like what you drank all week.</p>
+      <div class="buy-tags"><span class="buy-tag physical">Physical — buy from a shop you've actually visited</span></div>
+    </div>
+    <div class="buy-item">
+      <h3>Tours (Cu Chi, Mekong)</h3>
+      <p>Book online a day ahead through Klook, GetYourGuide or Viator — transparent pricing, real reviews, exact itinerary before you show up. A hotel tour desk works fine too if the operator has visible reviews; a random street tout the morning-of is the one place worth being cautious.</p>
+      <div class="buy-tags"><span class="buy-tag online">Online — for price certainty</span><span class="buy-tag physical">Physical — hotel desk is fine if reviewed</span></div>
+    </div>
+  </section>
+
+  <section class="block-section">
+    <span class="sec-eyebrow">Five quick things</span>
+    <h2 class="sec-title">Before you head out each day</h2>
+    <div class="etiquette-list">
+      <div class="etiquette-item"><span class="etiquette-num">01</span><p><b>Crossing the street</b> is a walk, not a sprint — steady pace, no stopping, no sudden moves. Bikes flow around you; they can't if you freeze.</p></div>
+      <div class="etiquette-item"><span class="etiquette-num">02</span><p><b>Temples want shoulders and knees covered</b> — Thiên Hậu and Jade Emperor both.</p></div>
+      <div class="etiquette-item"><span class="etiquette-num">03</span><p><b>Only Vinasun (white/green) or Mai Linh (green)</b> if flagging a taxi off the street instead of using the app.</p></div>
+      <div class="etiquette-item"><span class="etiquette-num">04</span><p><b>Agree the price before getting on</b> any motorbike taxi that isn't booked through Grab.</p></div>
+      <div class="etiquette-item"><span class="etiquette-num">05</span><p><b>Bag in front, zipped</b> in Ben Thanh and Bùi Viện specifically — the two most crowded spots on this itinerary.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="sign">Have a good one, Sài Gòn's worth it</span>
+    <p>Prices researched close to your travel dates but street prices move — treat every figure here as a ballpark, not a contract.</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  try{
+    var dayMap = {
+      '2026-9-22':'day2',
+      '2026-9-23':'day3',
+      '2026-9-24':'day4',
+      '2026-9-25':'day5',
+      '2026-9-26':'day6'
+    };
+    var now = new Date();
+    var key = now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
+    var todayId = dayMap[key];
+    if(todayId){
+      var section = document.getElementById(todayId);
+      if(section){
+        var badges = section.querySelectorAll('.today-badge');
+        for(var i=0;i<badges.length;i++){ badges[i].style.display='inline'; }
+      }
+      var chip = document.querySelector('.navchip[data-day="'+todayId+'"]');
+      if(chip){ chip.classList.add('is-today'); }
+    }
+  }catch(e){}
+})();
+</script>
+
+</body>
+</html>
